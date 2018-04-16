@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical">
+
+    <include layout="@layout/title_bar_black" />
+
+    <FrameLayout
+        android:id="@+id/flError"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <com.xiaomi.smarthome.common.ui.widget.TimePicker
+        android:id="@+id/time_picker"
+        android:layout_width="match_parent"
+        android:layout_height="200dp" />
+
+    <TextView
+        android:id="@+id/time_tip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:textColor="#AFAFAF"
+        android:textSize="12sp" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/white"
+            android:divider="@drawable/rect_eeeeee_05"
+            android:orientation="vertical"
+            android:showDividers="middle">
+
+            <RelativeLayout
+                android:id="@+id/rlRepeat"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/tvTRepeatTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:paddingLeft="20dp"
+                    android:paddingTop="10dp"
+                    android:text="@string/alarmcreate_repeat_title"
+                    android:textColor="@color/alarmcreate_repeat_title"
+                    android:textSize="@dimen/alarmcreate_repeat_title" />
+
+                <TextView
+                    android:id="@+id/tvRepeat"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tvTRepeatTitle"
+                    android:layout_gravity="center"
+                    android:hint="@string/alarmcreate_repeat_content"
+                    android:paddingBottom="10dp"
+                    android:paddingLeft="20dp"
+                    android:paddingTop="2dp"
+                    android:textColor="@color/alarmcreate_repeat_content"
+                    android:textSize="@dimen/alarmcreate_repeat_content" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="20dp"
+                    android:src="@drawable/common_list_item_anchor_normal" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/rlRing"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/tvTRing"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:paddingLeft="20dp"
+                    android:paddingTop="10dp"
+                    android:text="@string/alarmcreate_audio_title"
+                    android:textColor="@color/alarmcreate_repeat_title"
+                    android:textSize="@dimen/alarmcreate_repeat_title" />
+
+                <TextView
+                    android:id="@+id/tvRing"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tvTRing"
+                    android:layout_gravity="center"
+                    android:hint="@string/alarmcreate_repeat_content"
+                    android:paddingBottom="10dp"
+                    android:paddingLeft="20dp"
+                    android:paddingTop="2dp"
+                    android:textColor="@color/alarmcreate_repeat_content"
+                    android:textSize="@dimen/alarmcreate_repeat_content" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="20dp"
+                    android:src="@drawable/common_list_item_anchor_normal" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/rlContinue"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/tvTContinue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:paddingBottom="15dp"
+                    android:paddingLeft="20dp"
+                    android:paddingTop="15dp"
+                    android:text="@string/alarmcreate_continue_sleep"
+                    android:textColor="@color/alarmcreate_repeat_title"
+                    android:textSize="@dimen/alarmcreate_repeat_title" />
+
+
+                <com.xiaomi.smarthome.common.ui.widget.SwitchButton
+                    android:id="@+id/item_switch"
+                    android:layout_width="80dp"
+                    android:layout_height="50dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="20dp"
+                    android:paddingBottom="10dp"
+                    android:paddingLeft="30dp"
+                    android:paddingTop="10dp"
+                    android:visibility="visible" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/rlAutoDelete"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/tvAutoDelete"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:paddingBottom="15dp"
+                    android:paddingLeft="20dp"
+                    android:paddingTop="15dp"
+                    android:text="@string/alarmcreate_auto_delete"
+                    android:textColor="@color/alarmcreate_repeat_title"
+                    android:textSize="@dimen/alarmcreate_repeat_title" />
+
+
+                <com.xiaomi.smarthome.common.ui.widget.SwitchButton
+                    android:id="@+id/isAutoDelete"
+                    android:layout_width="80dp"
+                    android:layout_height="50dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="20dp"
+                    android:paddingBottom="10dp"
+                    android:paddingLeft="30dp"
+                    android:paddingTop="10dp"
+                    android:visibility="visible" />
+            </RelativeLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="8dp"
+                android:background="#f8f8f8" />
+
+            <RelativeLayout
+                android:id="@+id/rlDesc"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/tvTDesc"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:paddingBottom="15dp"
+                    android:paddingLeft="20dp"
+                    android:paddingTop="15dp"
+                    android:text="@string/alarmcreate_desc"
+                    android:textColor="@color/alarmcreate_repeat_title"
+                    android:textSize="@dimen/alarmcreate_repeat_title" />
+
+
+                <TextView
+                    android:id="@+id/tvDesc"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_gravity="center"
+                    android:layout_toRightOf="@+id/tvTDesc"
+                    android:gravity="right"
+                    android:hint="@string/alarmcreate_desc_hint"
+                    android:paddingBottom="15dp"
+                    android:paddingLeft="80dp"
+                    android:paddingRight="20dp"
+                    android:paddingTop="15dp"
+                    android:textColor="@color/alarmcreate_repeat_content"
+                    android:textColorHint="@color/alarmcreate_repeat_content"
+                    android:textSize="@dimen/alarmcreate_repeat_title" />
+
+            </RelativeLayout>
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

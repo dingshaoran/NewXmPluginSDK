@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="alarmclock_footer">#ff666666</color>
+    <color name="alarmclock_header">#ff666666</color>
+    <color name="color_f5f8fa">#f5f8fa</color>
+    <color name="color_bcbfc9">#bcbfc9</color>
+    <color name="home_cancel">#ff3388ee</color>
+    <color name="alarmcreate_repeat_title">#585858</color>
+    <color name="alarmcreate_repeat_content">#8a8a8a</color>
+    <color name="color_5566ff">#5566ff</color>
+    <color name="color_eeeeee">#eeeeee</color>
+    <color name="home_tab_name">#585858</color>
+    <color name="home_tab_delete">#ff6655</color>
+    <color name="color_80000000">#80000000</color>
+    <color name="color_60000000">#60000000</color>
+</resources>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="alarmclock_footer">12dp</dimen>
+    <dimen name="alarmclock_header">20dp</dimen>
+    <dimen name="alarmclock_control_bottom">50dp</dimen>
+    <dimen name="text_15sp">15sp</dimen>
+    <dimen name="alarmcreate_repeat_title">15dp</dimen>
+    <dimen name="alarmcreate_repeat_content">12dp</dimen>
+    <dimen name="home_tab_name">12dp</dimen>
+    <dimen name="home_tab_delete">12dp</dimen>
+</resources>
