@@ -39,7 +39,7 @@
             android:background="@color/color_eeeeee"
             android:orientation="vertical">
 
-            <com.xiaomi.smarthome.common.ui.widget.TimePicker
+            <com.tinymu.clock.widget.TimeDownPicker
                 android:id="@+id/time_picker"
                 android:layout_width="match_parent"
                 android:layout_height="200dp" />

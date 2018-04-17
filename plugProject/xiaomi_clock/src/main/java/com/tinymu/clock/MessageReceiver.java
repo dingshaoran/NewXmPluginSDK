@@ -3,8 +3,10 @@ package com.tinymu.clock;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
+import android.widget.Toast;
 
 import com.tinymu.clock.main.MainActivity;
 import com.xiaomi.plugin.core.XmPluginPackage;
@@ -24,8 +26,8 @@ public class MessageReceiver implements IXmPluginMessageReceiver {
 
     @Override
     public boolean handleMessage(Context context, XmPluginPackage xmPluginPackage, int type,
-            Intent intent,
-            DeviceStat deviceStat) {
+                                 Intent intent,
+                                 DeviceStat deviceStat) {
 //        DeviceStub stub = DeviceStub.getInstance(deviceStat);
 //        if(stub == null)return false;
         switch (type) {
@@ -38,6 +40,12 @@ public class MessageReceiver implements IXmPluginMessageReceiver {
                 // 订阅消息push通知
                 if (intent == null)
                     return false;
+                Bundle extras = intent.getExtras();
+                StringBuilder stringBuilder = new StringBuilder();
+                for (String s : extras.keySet()) {
+                    stringBuilder.append(s).append(" : ").append(extras.get(s)).append("\n");
+                }
+                Toast.makeText(context,stringBuilder.append("end").toString(),Toast.LENGTH_SHORT).show();
                 String msgType = intent.getStringExtra("type");
                 if (TextUtils.isEmpty(msgType))
                     return false;
@@ -47,14 +55,14 @@ public class MessageReceiver implements IXmPluginMessageReceiver {
                     String data = intent.getStringExtra("data");
                     try {
                         JSONArray array = new JSONArray(data);
-                        for(int i = 0; i < array.length(); i ++){
+                        for (int i = 0; i < array.length(); i++) {
                             JSONObject object = array.getJSONObject(i);
-                            String event =object.getString("key");
+                            String event = object.getString("key");
 //                            if(DeviceProperty.Events.work_status.equals(event)){
 //                                stub.synchronizeProperties(DeviceStub.NewSet(DeviceProperty.Names.work_state), null);
 //                            }
                         }
-                    }catch (Exception ex){
+                    } catch (Exception ex) {
 
                     }
 
@@ -75,15 +83,15 @@ public class MessageReceiver implements IXmPluginMessageReceiver {
     //智能家庭app主动插件，获取插件数据,建议定义的type>=100
     @Override
     public boolean handleMessage(Context context, XmPluginPackage xmPluginPackage, int type,
-            Intent intent, DeviceStat deviceStat, MessageCallback callback) {
+                                 Intent intent, DeviceStat deviceStat, MessageCallback callback) {
         //TODO 主app调用插件获取数据
         return false;
     }
-    
+
     //提供卡片模式，在设备列表显示
     @Override
     public BaseWidgetView createWidgetView(Context arg0, LayoutInflater arg1, XmPluginPackage arg2,
-            int arg3, Intent arg4, DeviceStat arg5) {
+                                           int arg3, Intent arg4, DeviceStat arg5) {
         return null;
     }
 

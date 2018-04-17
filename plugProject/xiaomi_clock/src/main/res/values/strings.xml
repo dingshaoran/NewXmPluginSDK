@@ -101,4 +101,5 @@
     <string name="alarmclock_close_circle_hint">请选择重复类型</string>
     <string name="alarmclock_close_desc_hint">请添加描述</string>
     <string name="alarmclock_close_time_hint">请选择时间</string>
+    <string name="picker_second">秒</string>
 </resources>

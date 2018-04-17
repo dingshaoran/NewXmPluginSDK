@@ -31,10 +31,11 @@ public class DeviceClock extends BaseDevice {
     public static final String OPERATION_MODIFY = "modify";
     public static final String OPERATION_CREATE = "create";
     public static final String OPERATION_OPEN = "open";
-    public static final String OPERATION_RUNNING = "running";
+    public static final String OPERATION_RESUME = "resume";
     public static final String OPERATION_PAUSE = "pause";
     public static final String OPERATION_CLOSE = "close";
     public static final String OPERATION_DELETE = "delete";
+    public static final String OPERATION_CANCLE = "cancle";
     public static final String CIRCLE_ONCE = "once";
     public static final String CIRCLE_WORKDAY = "workday";
     public static final String CIRCLE_MONTOFRI = "montofri";

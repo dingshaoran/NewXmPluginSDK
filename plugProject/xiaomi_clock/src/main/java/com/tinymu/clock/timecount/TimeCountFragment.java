@@ -17,9 +17,9 @@ import com.tinymu.clock.base.StatusActFragment;
 import com.tinymu.clock.main.MainActivity;
 import com.tinymu.clock.utils.FormatUtils;
 import com.tinymu.clock.utils.LogUtils;
+import com.tinymu.clock.widget.TimeDownPicker;
 import com.tinymu.clock.widget.TimeDownView;
 import com.xiaomi.smarthome.common.ui.dialog.MLAlertDialog;
-import com.xiaomi.smarthome.common.ui.widget.TimePicker;
 import com.xiaomi.smarthome.device.api.Callback;
 import com.zimi.clockmyk.R;
 
@@ -37,12 +37,12 @@ import static android.content.ContentValues.TAG;
  * Created by mi on 17-10-24.
  */
 
-public class TimeCountFragment extends StatusActFragment {
+public class TimeCountFragment extends StatusActFragment implements TimeDownView.OnTimeDownListener {
 
 
     private static final String HISTORYTIME = "timecount_history";
     private static final String SPLIT = " H:";
-    private TimePicker mViewDate;
+    private TimeDownPicker mViewDate;
     private TextView tvWhite;
     private TextView timeTip;
     private TextView tvBlue;
@@ -55,7 +55,7 @@ public class TimeCountFragment extends StatusActFragment {
     private TimeDownView mTdv;
     private View flTop;
     private View llControl;
-    private long mStartTime;
+    private long mEventTime;
 
     @Override
     public int getcontentView() {
@@ -64,7 +64,7 @@ public class TimeCountFragment extends StatusActFragment {
 
     @Override
     public void injectView(View contentView) {
-        mViewDate = (TimePicker) contentView.findViewById(R.id.time_picker);
+        mViewDate = (TimeDownPicker) contentView.findViewById(R.id.time_picker);
         llRun = contentView.findViewById(R.id.llRun);
         llCreate = contentView.findViewById(R.id.llCreate);
         flTop = contentView.findViewById(R.id.flTop);
@@ -82,12 +82,12 @@ public class TimeCountFragment extends StatusActFragment {
     @Override
     public void afterInjectView(View view) {
         tvWhite.setVisibility(View.GONE);
-        mViewDate.setIs24HourView(true);
         mViewDate.setCurrentMinute(0);
         mViewDate.setCurrentHour(0);
         rv.setLayoutManager(new LinearLayoutManager(activity()));
         TimeCountAdapter countAdapter = new TimeCountAdapter(activity(), mList, this);
         rv.setAdapter(countAdapter);
+        mTdv.setOnTimeDownListener(this);
         countAdapter.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -139,13 +139,13 @@ public class TimeCountFragment extends StatusActFragment {
                 } else {
                     AlarmClockBean alarmClockBean = new AlarmClockBean();
                     alarmClockBean.datetime = total;
-                    mList.add(alarmClockBean);
+                    mList.add(0, alarmClockBean);
                     rv.getAdapter().notifyDataSetChanged();
                 }
                 break;
             case R.id.tvBlue:
                 if (tvWhite.getVisibility() == View.VISIBLE) {
-                    requestOperate(mTdv.getStart() ? DeviceClock.OPERATION_PAUSE : DeviceClock.OPERATION_RUNNING);
+                    requestOperate(mTdv.getStart() ? DeviceClock.OPERATION_PAUSE : DeviceClock.OPERATION_RESUME);
                 } else {
                     requestOperate(DeviceClock.OPERATION_CREATE);
                 }
@@ -162,7 +162,7 @@ public class TimeCountFragment extends StatusActFragment {
                         }).setPositiveButton(R.string.timecount_stop_ask_yes, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        requestOperate(DeviceClock.OPERATION_DELETE);
+                        requestOperate(DeviceClock.OPERATION_CANCLE);
                         if (dialogInterface != null) {
                             dialogInterface.dismiss();
                         }
@@ -230,14 +230,14 @@ public class TimeCountFragment extends StatusActFragment {
             JSONObject data = new JSONObject();
             int total = mViewDate.getCurrentHour() * 60 + mViewDate.getCurrentMinute();
             data.put("type", DeviceClock.TYPE_TIMER);
-            data.put("offset", total);
-            data.put("circle", DeviceClock.CIRCLE_ONCE);
-            data.put("volume", 100);
-            data.put("reminder_audio", DeviceClock.AUDIO);
             if (DeviceClock.OPERATION_CREATE.equals(operate)) {
-                mStartTime = System.currentTimeMillis() + total * 1000;
+                mEventTime = System.currentTimeMillis() + total * 1000;
+                data.put("offset", total);
+                data.put("circle", DeviceClock.CIRCLE_ONCE);
+                data.put("volume", 100);
+                data.put("reminder_audio", DeviceClock.AUDIO);
+                data.put("event_timestamp", mEventTime);
             }
-            data.put("event_timestamp", mStartTime);
             JSONArray arr = new JSONArray();
             arr.put(data);
             params.put("data", arr);
@@ -250,27 +250,8 @@ public class TimeCountFragment extends StatusActFragment {
                         if (result != null && result.length() > 0) {
                             JSONObject jsonObject = result.optJSONObject(0);
                             if (jsonObject != null && DeviceClock.RESULT_OK.equals(jsonObject.optString("ack"))) {
-                                if (DeviceClock.OPERATION_CREATE.equals(operate)) {
-                                    llRun.setVisibility(View.VISIBLE);
-                                    tvWhite.setVisibility(View.VISIBLE);
-                                    llCreate.setVisibility(View.GONE);
-                                    tvBlue.setText(R.string.timecount_pause);
-                                    mTdv.setStart(true);
-                                } else if (DeviceClock.OPERATION_PAUSE.equals(operate)) {
-                                    tvBlue.setText(R.string.timecount_continue);
-                                    mTdv.setStart(false);
-                                } else if (DeviceClock.OPERATION_RUNNING.equals(operate)) {
-                                    tvBlue.setText(R.string.timecount_pause);
-                                    mTdv.setStart(true);
-                                } else if (DeviceClock.OPERATION_DELETE.equals(operate)) {
-                                    mViewDate.setCurrentMinute(0);
-                                    mViewDate.setCurrentHour(0);
-                                    llRun.setVisibility(View.GONE);
-                                    tvWhite.setVisibility(View.GONE);
-                                    llCreate.setVisibility(View.VISIBLE);
-                                    tvBlue.setText(R.string.timecount_start);
-                                    mTdv.setStart(false);
-                                }
+                                long time = mEventTime;
+                                setStatus(time, operate);
                             }
                         } else {
                             onError(ERROR_DATA);
@@ -290,6 +271,30 @@ public class TimeCountFragment extends StatusActFragment {
         }
     }
 
+    private void setStatus(long time, String operate) {
+        if (DeviceClock.OPERATION_CREATE.equals(operate)) {
+            llRun.setVisibility(View.VISIBLE);
+            tvWhite.setVisibility(View.VISIBLE);
+            llCreate.setVisibility(View.GONE);
+            tvBlue.setText(R.string.timecount_pause);
+            mTdv.setStart(true, time);
+        } else if (DeviceClock.OPERATION_PAUSE.equals(operate)) {
+            tvBlue.setText(R.string.timecount_continue);
+            mTdv.setStart(false, time);
+        } else if (DeviceClock.OPERATION_RESUME.equals(operate)) {
+            tvBlue.setText(R.string.timecount_pause);
+            mTdv.setStart(true, time);
+        } else if (DeviceClock.OPERATION_CANCLE.equals(operate)) {
+            mViewDate.setCurrentMinute(0);
+            mViewDate.setCurrentHour(0);
+            llRun.setVisibility(View.GONE);
+            tvWhite.setVisibility(View.GONE);
+            llCreate.setVisibility(View.VISIBLE);
+            tvBlue.setText(R.string.timecount_start);
+            mTdv.setStart(false, time);
+        }
+    }
+
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -300,6 +305,7 @@ public class TimeCountFragment extends StatusActFragment {
     public void onDestroy() {
         super.onDestroy();
         saveLocal();
+        mTdv.setStart(false, System.currentTimeMillis());
     }
 
     private void saveLocal() {
@@ -315,5 +321,10 @@ public class TimeCountFragment extends StatusActFragment {
                 }
             }
         });
+    }
+
+    @Override
+    public void onFinish() {
+        setStatus(System.currentTimeMillis(), DeviceClock.OPERATION_CANCLE);
     }
 }
