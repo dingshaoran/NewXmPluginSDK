@@ -74,7 +74,7 @@ public class NotifyFragment extends StatusActFragment {
             params.put("index", index);
             params.put("parser_timestamp", System.currentTimeMillis());
             params.put("req_type", DeviceClock.TYPE_REMINDER);
-            DeviceClock.getDevice(getDeviceStat()).callMethod("set_alarm", params, new Callback<String>() {
+            DeviceClock.getDevice(getDeviceStat()).callMethod(DeviceClock.METHORD_ALARM_OPS, params, new Callback<String>() {
                 @Override
                 public void onSuccess(String ss) {
                     try {
@@ -95,12 +95,14 @@ public class NotifyFragment extends StatusActFragment {
                         }
                     } catch (Exception e) {
                         onError(ERROR_JSON);
+                        LogUtils.e(TAG, e);
                     }
                 }
 
                 @Override
                 public void onFailure(int i, String s) {
                     onError(i);
+                    LogUtils.i(TAG, i + s);
                 }
             });
         } catch (Exception e) {
@@ -156,7 +158,7 @@ public class NotifyFragment extends StatusActFragment {
             params.put("operation", DeviceClock.OPERATION_DELETE);
             params.put("data", array);
             if (array.length() != 0) {
-                DeviceClock.getDevice(getDeviceStat()).callMethod("set_alarm", params, new Callback<String>() {
+                DeviceClock.getDevice(getDeviceStat()).callMethod(DeviceClock.METHORD_ALARM_OPS, params, new Callback<String>() {
                     @Override
                     public void onSuccess(String ss) {
                         try {
@@ -184,11 +186,13 @@ public class NotifyFragment extends StatusActFragment {
                             ((MainActivity) xmPluginActivity()).onFragmentCall(MainActivity.SELECT_DELETE);
                             rv.getAdapter().notifyDataSetChanged();
                         } catch (Exception e) {
+                            LogUtils.e(TAG, e);
                         }
                     }
 
                     @Override
                     public void onFailure(int i, String s) {
+                        LogUtils.i(TAG, i + s);
                     }
                 });
             }

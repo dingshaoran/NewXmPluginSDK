@@ -5,8 +5,8 @@ import android.widget.Toast;
 
 import com.tinymu.clock.DeviceClock;
 import com.tinymu.clock.base.OnDataChanged;
-import com.tinymu.clock.base.StatusCallback;
 import com.tinymu.clock.utils.LogUtils;
+import com.xiaomi.smarthome.device.api.Callback;
 import com.xiaomi.smarthome.device.api.XmPluginBaseActivity;
 
 import org.json.JSONArray;
@@ -35,7 +35,7 @@ public class ClockPresenter {
             params.put("data", arr);
             params.put("parser_timestamp", System.currentTimeMillis());
             params.put("operation", DeviceClock.OPERATION_MODIFY);
-            DeviceClock.getDevice(act.getDeviceStat()).callMethod("set_alarm", params, new StatusCallback(null) {
+            DeviceClock.getDevice(act.getDeviceStat()).callMethod(DeviceClock.METHORD_ALARM_OPS, params, new Callback<String>() {
                 @Override
                 public void onSuccess(String s) {
                     try {
@@ -82,7 +82,7 @@ public class ClockPresenter {
             params.put("parser_timestamp", System.currentTimeMillis());
             params.put("operation", closeChange ? DeviceClock.OPERATION_OPEN : DeviceClock.OPERATION_CLOSE);
             params.put("data", arr);
-            DeviceClock.getDevice(act.getDeviceStat()).callMethod("set_alarm", params, new StatusCallback(null) {
+            DeviceClock.getDevice(act.getDeviceStat()).callMethod(DeviceClock.METHORD_ALARM_OPS, params, new Callback<String>() {
                 @Override
                 public void onSuccess(String s) {
                     try {

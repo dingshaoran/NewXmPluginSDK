@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -95,7 +94,7 @@ public class AlarmClockFragment extends StatusActFragment {
             params.put("req_type", DeviceClock.TYPE_ALARM);
             params.put("parser_timestamp", System.currentTimeMillis());
             params.put("index", index);
-            DeviceClock.getDevice(getDeviceStat()).callMethod("set_alarm", params, new Callback<String>() {
+            DeviceClock.getDevice(getDeviceStat()).callMethod("alarm", params, new Callback<String>() {
 
                 @Override
                 public void onSuccess(String ss) {
@@ -116,14 +115,14 @@ public class AlarmClockFragment extends StatusActFragment {
                             requestData(mList.size());
                         }
                     } catch (Exception e) {
-                        Log.i(TAG, "", e);
+                        LogUtils.e(TAG, e);
                         onError(ERROR_JSON);
                     }
                 }
 
                 @Override
                 public void onFailure(int i, String s) {
-                    Log.i(TAG, i + s);
+                    LogUtils.i(TAG, i + s);
                     if (i == ERROR_TIMEOUT) {
                         requestData(index);
                     } else if (i == ERROR_NET) {
@@ -188,7 +187,7 @@ public class AlarmClockFragment extends StatusActFragment {
             }
             params.put("data", arr);
             if (arr.length() != 0) {
-                DeviceClock.getDevice(getDeviceStat()).callMethod("set_alarm", params, new Callback<String>() {
+                DeviceClock.getDevice(getDeviceStat()).callMethod(DeviceClock.METHORD_ALARM_OPS, params, new Callback<String>() {
                     @Override
                     public void onSuccess(String ss) {
                         try {
@@ -211,7 +210,7 @@ public class AlarmClockFragment extends StatusActFragment {
 
                     @Override
                     public void onFailure(int i, String s) {
-                        Log.i("dsrrequest2", i + s);
+                        LogUtils.i(TAG, i + s);
                     }
                 });
             }

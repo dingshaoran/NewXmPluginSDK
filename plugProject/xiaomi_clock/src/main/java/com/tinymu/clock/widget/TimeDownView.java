@@ -13,7 +13,7 @@ import com.zimi.clockmyk.R;
  * Created by livy on 16/9/14.
  */
 public class TimeDownView extends TextView {
-    private boolean start;
+    private byte start = -1;//初始值是-1，开始，暂停 三种状态
     private long timeEvent;
     private OnTimeDownListener listener;
     private Runnable countDown = new Runnable() {
@@ -22,14 +22,14 @@ public class TimeDownView extends TextView {
             long lastTime = timeEvent - System.currentTimeMillis();
             if (lastTime > 0) {
                 setText(getContext().getString(R.string.timecount_history_item, lastTime / 60000, (lastTime % 60000) / 1000));
-                if (start) {
+                if (start == 1) {
                     postDelayed(this, 1000);
                 }
             } else {
+                start = 0;
                 if (listener != null) {
                     listener.onFinish();
                 }
-                setText("00:00");
             }
         }
     };
@@ -67,12 +67,16 @@ public class TimeDownView extends TextView {
     }
 
     public boolean getStart() {
-        return start;
+        return start == 1;
     }
 
     public void setStart(boolean start, long timeEvent) {
-        this.start = start;
         this.timeEvent = timeEvent;
+        byte startInt = (byte) (start ? 1 : 0);//初始值是-1，开始，暂停 三种状态
+        if (startInt == this.start) {
+            return;
+        }
+        this.start = startInt;
         removeCallbacks(countDown);
         post(countDown);
     }

@@ -6,7 +6,6 @@ import android.content.SharedPreferences;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -198,7 +197,7 @@ public class AlarmCreateActivity extends BasePluginActivity implements View.OnCl
                 array.put(data);
                 params.put("data", array);
                 params.put("parser_timestamp", System.currentTimeMillis());
-                DeviceClock.getDevice(getDeviceStat()).callMethod("set_alarm", params, new Callback<String>() {
+                DeviceClock.getDevice(getDeviceStat()).callMethod(DeviceClock.METHORD_ALARM_OPS, params, new Callback<String>() {
 
                     @Override
                     public void onSuccess(String ss) {
@@ -210,14 +209,14 @@ public class AlarmCreateActivity extends BasePluginActivity implements View.OnCl
                                 onBackPressed();
                             }
                         } catch (Exception e) {
-                            Log.i(TAG, "", e);
+                            LogUtils.e(TAG, e);
                             onError(ERROR_JSON);
                         }
                     }
 
                     @Override
                     public void onFailure(int i, String s) {
-                        Log.i(TAG, i + s);
+                        LogUtils.i(TAG, i + s);
                         if (i == ERROR_TIMEOUT) {
                         } else {
                             onError(i);

@@ -32,13 +32,13 @@ public class LogUtils {
 
     public static void e(String tag, Exception e) {
         if (DEBUG) {
-            Log.e(tag, "fatal", e);
+            Log.e(tag, "clockmyk", e);
         }
     }
 
     public static void i(String tag, String e) {
         if (DEBUG) {
-            Log.i(tag, e);
+            Log.i(tag, "clockmyk   " + e);
         }
     }
 }

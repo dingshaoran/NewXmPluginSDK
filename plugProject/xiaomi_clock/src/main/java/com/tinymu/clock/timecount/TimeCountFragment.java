@@ -31,17 +31,21 @@ import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
-import static android.content.ContentValues.TAG;
-
 /**
  * Created by mi on 17-10-24.
  */
 
-public class TimeCountFragment extends StatusActFragment implements TimeDownView.OnTimeDownListener {
-
+public class TimeCountFragment extends StatusActFragment implements TimeDownView.OnTimeDownListener, DeviceClock.SubscribeLisenter {
 
     private static final String HISTORYTIME = "timecount_history";
     private static final String SPLIT = " H:";
+    private static final String TAG = "TimeCountFragment";
+    private static final String STATUS_RUNNING = "running";
+    private static final String STATUS_RESUME= "resume";
+    private static final String STATUS_PAUSE = "pause";
+    private static final String STATUS_NONE = "none";
+    private static final String COUNTDOWN = "count_down";
+    private static final String[] EVENTS = new String[]{COUNTDOWN};
     private TimeDownPicker mViewDate;
     private TextView tvWhite;
     private TextView timeTip;
@@ -56,6 +60,23 @@ public class TimeCountFragment extends StatusActFragment implements TimeDownView
     private View flTop;
     private View llControl;
     private long mEventTime;
+
+    @Override
+    public void onSubscribeData(String data) {
+        try {
+            JSONArray arr = new JSONArray(data);
+            if (arr.length() > 0) {
+                JSONObject jsonObject = arr.optJSONObject(0);
+                JSONArray result = jsonObject.optJSONArray("value");
+                if (result != null && result.length() >= 3) {
+                    String status = result.optString(0);
+                    setStatus(result.optLong(1) * 1000 + result.optLong(2) * 1000, status);
+                }
+            }
+        } catch (Exception e1) {
+            LogUtils.e(TimeCountFragment.TAG, e1);
+        }
+    }
 
     @Override
     public int getcontentView() {
@@ -97,6 +118,7 @@ public class TimeCountFragment extends StatusActFragment implements TimeDownView
             }
         });
         requestList();
+        requestData();
     }
 
     private void requestList() {
@@ -126,6 +148,42 @@ public class TimeCountFragment extends StatusActFragment implements TimeDownView
                 });
             }
         });
+    }
+
+    private void requestData() {
+        try {
+            JSONArray params = new JSONArray();
+//            params.put("operation", DeviceClock.OPERATION_QUERY);
+//            params.put("parser_timestamp", System.currentTimeMillis());
+//            params.put("index", 0);
+//            params.put("req_type", DeviceClock.TYPE_TIMER);
+            DeviceClock.getDevice(getDeviceStat()).callMethod("get_count_down", params, new Callback<String>() {
+                @Override
+                public void onSuccess(String ss) {
+                    try {
+                        JSONObject jo = new JSONObject(ss);
+                        JSONArray result = jo.optJSONArray("result");
+                        if (result != null && result.length() >= 3) {
+                            String status = result.optString(0);
+                            setStatus(result.optLong(1) * 1000 + result.optLong(2) * 1000, status);
+                            if (!STATUS_NONE.equals(status)) {
+                                DeviceClock.getDevice(getDeviceStat()).subscribeEvent(TimeCountFragment.this, EVENTS);
+                            }
+                        }
+                    } catch (Exception e) {
+                        onError(ERROR_JSON);
+                    }
+                }
+
+                @Override
+                public void onFailure(int i, String s) {
+                    onError(i);
+                    LogUtils.i(TAG, i + s);
+                }
+            });
+        } catch (Exception e) {
+            LogUtils.e(TAG, e);
+        }
     }
 
     @Override
@@ -241,7 +299,7 @@ public class TimeCountFragment extends StatusActFragment implements TimeDownView
             JSONArray arr = new JSONArray();
             arr.put(data);
             params.put("data", arr);
-            DeviceClock.getDevice(getDeviceStat()).callMethod("set_alarm", params, new Callback<String>() {
+            DeviceClock.getDevice(getDeviceStat()).callMethod(DeviceClock.METHORD_ALARM_OPS, params, new Callback<String>() {
                 @Override
                 public void onSuccess(String ss) {
                     try {
@@ -250,19 +308,33 @@ public class TimeCountFragment extends StatusActFragment implements TimeDownView
                         if (result != null && result.length() > 0) {
                             JSONObject jsonObject = result.optJSONObject(0);
                             if (jsonObject != null && DeviceClock.RESULT_OK.equals(jsonObject.optString("ack"))) {
-                                long time = mEventTime;
-                                setStatus(time, operate);
+                                switch (operate) {
+                                    case DeviceClock.OPERATION_CREATE:
+                                        DeviceClock.getDevice(getDeviceStat()).subscribeEvent(TimeCountFragment.this, EVENTS);
+                                    case DeviceClock.OPERATION_RESUME:
+                                        setStatus(mEventTime, STATUS_RUNNING);
+                                        break;
+                                    case DeviceClock.OPERATION_PAUSE:
+                                        setStatus(mEventTime, STATUS_PAUSE);
+                                        break;
+                                    case DeviceClock.OPERATION_CANCLE:
+                                        setStatus(mEventTime, STATUS_NONE);
+                                        DeviceClock.getDevice(getDeviceStat()).unsubscribeEvent(EVENTS);
+                                        break;
+                                }
                             }
                         } else {
                             onError(ERROR_DATA);
                         }
                     } catch (Exception e) {
+                        LogUtils.e(TAG, e);
                         onError(ERROR_JSON);
                     }
                 }
 
                 @Override
                 public void onFailure(int i, String s) {
+                    LogUtils.i(TAG, i + s);
                     onError(i);
                 }
             });
@@ -272,19 +344,20 @@ public class TimeCountFragment extends StatusActFragment implements TimeDownView
     }
 
     private void setStatus(long time, String operate) {
-        if (DeviceClock.OPERATION_CREATE.equals(operate)) {
+        LogUtils.i(TAG, "setStatus  " + time + operate);
+        if (STATUS_RUNNING.equals(operate)||STATUS_RESUME.equals(operate)) {
             llRun.setVisibility(View.VISIBLE);
             tvWhite.setVisibility(View.VISIBLE);
             llCreate.setVisibility(View.GONE);
             tvBlue.setText(R.string.timecount_pause);
             mTdv.setStart(true, time);
-        } else if (DeviceClock.OPERATION_PAUSE.equals(operate)) {
+        } else if (STATUS_PAUSE.equals(operate)) {
+            llRun.setVisibility(View.VISIBLE);
+            tvWhite.setVisibility(View.VISIBLE);
+            llCreate.setVisibility(View.GONE);
             tvBlue.setText(R.string.timecount_continue);
             mTdv.setStart(false, time);
-        } else if (DeviceClock.OPERATION_RESUME.equals(operate)) {
-            tvBlue.setText(R.string.timecount_pause);
-            mTdv.setStart(true, time);
-        } else if (DeviceClock.OPERATION_CANCLE.equals(operate)) {
+        } else if (STATUS_NONE.equals(operate)) {
             mViewDate.setCurrentMinute(0);
             mViewDate.setCurrentHour(0);
             llRun.setVisibility(View.GONE);
@@ -302,10 +375,11 @@ public class TimeCountFragment extends StatusActFragment implements TimeDownView
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
+    public void onDestroyView() {
+        super.onDestroyView();
         saveLocal();
         mTdv.setStart(false, System.currentTimeMillis());
+        DeviceClock.getDevice(getDeviceStat()).unsubscribeEvent(EVENTS);
     }
 
     private void saveLocal() {
@@ -325,6 +399,9 @@ public class TimeCountFragment extends StatusActFragment implements TimeDownView
 
     @Override
     public void onFinish() {
-        setStatus(System.currentTimeMillis(), DeviceClock.OPERATION_CANCLE);
+        setStatus(System.currentTimeMillis(), STATUS_NONE);
+        DeviceClock.getDevice(getDeviceStat()).unsubscribeEvent(EVENTS);
+        LogUtils.i(TAG, "onFinish");
     }
+
 }

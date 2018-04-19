@@ -3,10 +3,9 @@ package com.tinymu.clock;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
-import android.widget.Toast;
 
 import com.tinymu.clock.main.MainActivity;
 import com.xiaomi.plugin.core.XmPluginPackage;
@@ -16,8 +15,7 @@ import com.xiaomi.smarthome.device.api.IXmPluginMessageReceiver;
 import com.xiaomi.smarthome.device.api.MessageCallback;
 import com.xiaomi.smarthome.device.api.XmPluginHostApi;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
+import java.util.Set;
 
 /**
  * 所有插件入口函数，必须实现
@@ -40,12 +38,12 @@ public class MessageReceiver implements IXmPluginMessageReceiver {
                 // 订阅消息push通知
                 if (intent == null)
                     return false;
-                Bundle extras = intent.getExtras();
-                StringBuilder stringBuilder = new StringBuilder();
-                for (String s : extras.keySet()) {
-                    stringBuilder.append(s).append(" : ").append(extras.get(s)).append("\n");
+                StringBuilder sb = new StringBuilder();
+                Set<String> strings = intent.getExtras().keySet();
+                for (String string : strings) {
+                    sb.append(string).append("  ").append(intent.getExtras().get(string)).append("\n");
                 }
-                Toast.makeText(context,stringBuilder.append("end").toString(),Toast.LENGTH_SHORT).show();
+                Log.i("sdfsac", sb.toString());
                 String msgType = intent.getStringExtra("type");
                 if (TextUtils.isEmpty(msgType))
                     return false;
@@ -53,25 +51,15 @@ public class MessageReceiver implements IXmPluginMessageReceiver {
                     //String event = intent.getStringExtra("event");
                     //[{"key":"event.work_status","time":1514280249,"value":["use"]}]
                     String data = intent.getStringExtra("data");
-                    try {
-                        JSONArray array = new JSONArray(data);
-                        for (int i = 0; i < array.length(); i++) {
-                            JSONObject object = array.getJSONObject(i);
-                            String event = object.getString("key");
-//                            if(DeviceProperty.Events.work_status.equals(event)){
-//                                stub.synchronizeProperties(DeviceStub.NewSet(DeviceProperty.Names.work_state), null);
-//                            }
-                        }
-                    } catch (Exception ex) {
-
-                    }
-
+                    DeviceClock device = DeviceClock.getDevice(deviceStat);
+                    device.onSubscribeEvent(data);
                 } else if ("ScenePush".equals(msgType)) {// 场景消息
                     String event = intent.getStringExtra("event");
                     String extra = intent.getStringExtra("extra");
+                    DeviceClock device = DeviceClock.getDevice(deviceStat);
+                    device.onSubscribeEvent(event);
                     boolean isNotified = intent.getBooleanExtra("isNotified", false);
 //                    Log.d(DeviceStub.MODEL, "ScenePush :" + event + "  " + extra);
-                    //TODO 处理场景通知
                 }
             }
             default:

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="alarmclock_footer">你可以直接对闹钟说\n“小爱同学，每天早上7点叫醒我”\n“小爱同学，15分钟后提醒我揭面膜”</string>
-    <string name="time_after_hint_day">%s天%s小时%s分钟后响铃</string>
-    <string name="time_after_hint_hour">%s小时%s分钟后响铃</string>
-    <string name="time_after_hint_minute">%s分钟后响铃</string>
+    <string name="time_after_hint_day">%1$s天%2$s小时%3$s分钟后响铃</string>
+    <string name="time_after_hint_hour">%1$s小时%2$s分钟后响铃</string>
+    <string name="time_after_hint_minute">%1$s分钟后响铃</string>
     <string name="error_text">设备离线，请检查网络连接</string>
     <string name="netfail_text">手机网络不可用，请检查网络连接</string>
     <string name="nodata_text">暂时没有获取到数据</string>
@@ -21,7 +21,7 @@
     <string name="home_delete_all">全选</string>
     <string name="home_delete_none">全不选</string>
     <string name="alarmclock_close_title">关闭重复闹钟</string>
-    <string name="alarmclock_close_once">仅在%s关闭一次</string>
+    <string name="alarmclock_close_once">仅在%1$s关闭一次</string>
     <string name="alarmclock_close_all">关闭这个重复闹钟</string>
     <string name="alarmclock_close_today">（今天）</string>
     <string name="alarmclock_close_tomorrow">（明天）</string>
@@ -76,7 +76,7 @@
     <string name="notifycreate_desc_title">标记</string>
     <string name="notifycreate_desc_none">无</string>
     <string name="notifycreate_reqpestclose_title">结束重复</string>
-    <string name="notifycreate_hour_minute">%02d:%02d</string>
+    <string name="notifycreate_hour_minute">%02$d:%02$d</string>
     <string name="timecount_stop">结束</string>
     <string name="timecount_start">启动</string>
     <string name="timecount_pause">暂停</string>
@@ -84,8 +84,8 @@
     <string name="timecount_historyuse">常用倒计时</string>
     <string name="timecount_runhint">请在米家智能闹钟上查看倒计时</string>
     <string name="timecount_addhistory">添加至常用倒计时</string>
-    <string name="timecount_exit">已存在%d分%d秒的倒计时</string>
-    <string name="timecount_history_item">%d分%d秒</string>
+    <string name="timecount_exit">已存在%1$02d分%2$02d秒的倒计时</string>
+    <string name="timecount_history_item">%1$02d分%2$02d秒</string>
     <string name="timecount_stop_ask">确定要结束倒计时么？</string>
     <string name="timecount_stop_ask_yes">结束</string>
     <string name="timecount_stop_ask_no">不结束</string>
