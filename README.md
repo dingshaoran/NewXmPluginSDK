@@ -134,6 +134,14 @@ plugProject目录下包含了米家扩展程序示例工程，可供扩展程序
 	./gradlew installPluginDemoDebug 安装运行debug配置米家扩展程序
 	./gradlew installPluginDemoRelease 安装运行release米家扩展程序
 	```
+	
+	已经获取到插件文件的apk，可以使用如下命令安装：
+	```
+	adb push 插件文件的全路径   /sdcard/SmartHome/plugin/debug/9.mpk;
+	adb shell  am force-stop com.xiaomi.smarthome;
+	adb shell  am start com.xiaomi.smarthome/.SmartHomeMainActivity;
+	adb shell am broadcast -a com.xiaomi.smarthome.action.OPEN_API -n com.xiaomi.smarthome/.framework.openapi.OpenApiReceiver --es type plugin_debug --es sub_type debug_package;
+	```
 
 	通过上述两种方式运行米家扩展程序的时候，会通过命令行重启米家APP（运行过程中米家APP会退出重新再进一次，这是正常现象）。如果运行成功，会先弹“从SD卡读取成功”的Toast，然后再弹“安装成功”的Toast。这个时候再点击进入“小米开发板”这个设备，运行的就是当前工程下的PluginDemo米家扩展程序，而不是云端下发的米家扩展程序。
 
