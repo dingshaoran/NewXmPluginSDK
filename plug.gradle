@@ -184,7 +184,7 @@ void installPlugin(def project, def variant) {
                     commandLine adbcmd,
                             "push",
                             defaultOutputFile,
-                            "/sdcard/SmartHome/plugin/debug/${plugid}.mpk"
+                            "/sdcard/Android/data/com.xiaomi.smarthome/cache/debug/${plugid}.mpk"
                     standardOutput = stdout
                 }
                 def error = stdout.toString().trim()
